@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Adín - Ofertas Exclusivas</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS GERAIS --- */
+        :root {
+            --font-main: 'Poppins', sans-serif;
+            --color-primary: #00726f;
+            --color-accent: #79b9e7;
+            --color-btn: #ff8f00;
+            --color-btn-hover: #e68200;
+            --color-text: #494949;
+            --bg-light: #f5f5f5;
+            --bg-white: #ffffff;
+            --price-old: #d01716;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-white);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .brand-area { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { width: 210px; height: 60px; object-fit: contain; }
+        .brand-text { font-size: 22px; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--color-text); font-weight: 600; font-size: 14px; }
+        
+        /* --- HERO --- */
+        .hero { background: transparent; padding: 20px 0; text-align: center; }
+        .hero-banner-img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block; transition: opacity 0.5s ease-in-out; opacity: 1; }
+        .fade-out { opacity: 0.4; }
+
+        /* --- PRODUTOS --- */
+        .products-section { padding: 20px 0 40px 0; }
+        .section-title { text-align: center; font-size: 26px; color: var(--color-primary); margin-bottom: 30px; font-weight: 700; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+
+        .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        .card-img { height: 250px; background: #f9f9f9; overflow: hidden; display: block; cursor: pointer; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .card:hover .card-img img { transform: scale(1.05); }
+
+        .card-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #333; }
+        .price-box { margin-bottom: 15px; }
+        .old-price { text-decoration: line-through; color: var(--price-old); font-size: 13px; margin-right: 5px; }
+        .new-price { font-size: 22px; font-weight: 700; color: var(--color-primary); }
+        .installments { font-size: 11px; color: #666; margin-top: 2px; }
+
+        .btn-buy { display: block; width: 100%; padding: 12px; background-color: var(--color-btn); color: white; text-align: center; font-weight: 700; text-transform: uppercase; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-buy:hover { background-color: var(--color-btn-hover); }
+
+        /* Botão "Ver Detalhes" */
+        .btn-details { display: block; width: 100%; padding: 10px; background-color: transparent; color: var(--color-primary); border: 1px solid var(--color-primary); border-radius: 5px; text-align: center; text-decoration: none; font-weight: 600; font-size: 13px; margin-top: 8px; transition: 0.3s; }
+        .btn-details:hover { background-color: var(--color-primary); color: white; }
+
+        /* --- MODAL E FORMS --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 480px; border-radius: 10px; padding: 25px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #666; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 14px; }
+
+        .payment-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px 5px; background: #eee; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 12px; }
+        .tab-btn.active { background: var(--color-primary); color: white; }
+        
+        .payment-info { display: none; padding: 15px; background: #f9f9f9; border: 1px solid #eee; border-radius: 5px; }
+        .payment-info.active { display: block; }
+        
+        .pix-box, .crypto-box { font-size: 12px; word-break: break-all; }
+        .copy-box { background: #e0e0e0; padding: 8px; border-radius: 5px; margin: 5px 0; font-family: monospace; cursor: pointer; border: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;}
+        .copy-box:active { background: #ccc; }
+
+        /* --- CHAT WIDGET (Estilo Novo) --- */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 999; }
+        .chat-btn { width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; border: none; transition: transform 0.2s; position: relative; }
+        .chat-btn:hover { transform: scale(1.1); }
+        .notification-dot { position: absolute; top: 0; right: 0; width: 18px; height: 18px; background: red; border-radius: 50%; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 2px solid white; display: none; }
+        
+        .chat-box { display: none; position: absolute; bottom: 80px; right: 0; width: 300px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); overflow: hidden; animation: fadeIn 0.3s; }
+        .chat-header { background: #075e54; color: white; padding: 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { padding: 15px; height: 200px; overflow-y: auto; background: #e5ddd5; display: flex; flex-direction: column; gap: 10px; }
+        
+        .message { padding: 8px 12px; border-radius: 10px; font-size: 14px; max-width: 85%; line-height: 1.4; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message.bot { background: white; align-self: flex-start; border-top-left-radius: 0; }
+        .message.user { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; text-align: right; }
+        
+        .chat-footer { padding: 10px; background: #f0f0f0; border-top: 1px solid #ddd; display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
+        .chat-footer button { background: #075e54; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- FOOTER --- */
+        footer { background: #333; color: white; padding: 30px 0; text-align: center; margin-top: 40px; }
+        .footer-links a { color: #ccc; margin: 0 10px; font-size: 13px; }
+        .admin-btn { background: none; border: 1px solid #555; color: #777; padding: 5px 10px; font-size: 10px; margin-top: 20px; cursor: pointer; border-radius: 3px;}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <a href="#" class="brand-area">
+                <img src="./img/adin-descontos-black.png" alt="Logo" class="logo-img">
+                <span class="brand-text">Loja Adín</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#produtos">Produtos</a>
+                <a href="#contato">Contato</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <img src="./banner/banner-white.png" id="bannerImg" alt="Ofertas Especiais" class="hero-banner-img">
+        </div>
+    </section>
+
+    <section id="produtos" class="products-section">
+        <div class="container">
+            <h2 class="section-title">Destaques da Semana</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <a href="produto-jade1.html" class="card-img">
+                        <img src="./Produtos/jade-hardwallet/jade-hard.png" alt="Jade Wallet">
+                    </a>
+                    <div class="card-body">
+                        <div class="card-title">Carteira Cripto Jade Hardware</div>
+                        <div class="price-box">
+                            <span class="old-price">R$ 867,90</span>
+                            <span class="new-price">R$ 795,00</span>
+                            <div class="installments">3x de R$ 265,00</div>
+                        </div>
+                        <button class="btn-buy" onclick="openCheckout('Jade Hardware Wallet', 795.00)">Comprar Rápido</button>
+                        <a href="produto-jade.html" class="btn-details"><i class="fas fa-eye"></i> Ver Detalhes</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <a href="produto-educacao-financeira.html" class="card-img">
+                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="E-book Finanças">
+                    </a>
+                    <div class="card-body">
+                        <div class="card-title">E-book: Educação Financeira do Zero</div>
+                        <div class="price-box">
+                            <span class="old-price">R$ 19,90</span>
+                            <span class="new-price">R$ 9,90</span>
+                            <div class="installments">Envio Imediato (PDF)</div>
+                        </div>
+                        <button class="btn-buy" onclick="openCheckout('E-book Finanças', 9.90)">Comprar Rápido</button>
+                        <a href="produto-educacao-financeira.html" class="btn-details"><i class="fas fa-eye"></i> Ler Sobre</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Maleta Ferramentas">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">Maleta Ferramentas Titanium Pro</div>
+                        <div class="price-box">
+                            <span class="old-price">R$ 350,00</span>
+                            <span class="new-price">R$ 189,90</span>
+                            <div class="installments">12x no cartão</div>
+                        </div>
+                        <button class="btn-buy" onclick="openCheckout('Maleta Ferramentas Titanium', 189.90)">Comprar Rápido</button>
+                        <button class="btn-details" onclick="alert('Página em construção!')">Ver Detalhes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCheckout()">&times;</span>
+            <h3 style="margin-bottom: 15px; color: var(--color-primary);">Finalizar Pedido</h3>
+            
+            <div id="product-summary" style="background: #f0f0f0; padding: 10px; margin-bottom: 15px; border-radius: 5px; font-size: 13px;"></div>
+
+            <form id="checkoutForm" onsubmit="processOrder(event)">
+                <div class="form-group"><input type="text" id="clientName" required placeholder="Nome Completo"></div>
+                <div class="form-group"><input type="text" id="clientAddress" required placeholder="Endereço Completo"></div>
+
+                <label style="font-weight: 600; font-size: 13px; display:block; margin-bottom: 5px;">Pagamento:</label>
+                <div class="payment-tabs">
+                    <button type="button" class="tab-btn active" onclick="switchTab('credit')"><i class="far fa-credit-card"></i> Cartão</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('pix')"><i class="fas fa-qrcode"></i> Pix</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('bitcoin')"><i class="fab fa-bitcoin"></i> Cripto</button>
+                </div>
+
+                <div id="tab-credit" class="payment-info active">
+                    <input type="text" placeholder="Número do Cartão" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:5px; margin-bottom:5px;">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" placeholder="MM/AA" style="width:50%; padding:8px; border:1px solid #ccc; border-radius:5px;">
+                        <input type="text" placeholder="CVV" style="width:50%; padding:8px; border:1px solid #ccc; border-radius:5px;">
+                    </div>
+                </div>
+
+                <div id="tab-pix" class="payment-info">
+                    <div class="pix-box">
+                        <p style="margin-bottom: 5px; font-weight: 600;">Copie e cole a chave Pix:</p>
+                        <div class="copy-box" onclick="copyToClipboard('adindescontos@gmail.com')" title="Clique para copiar">
+                            adindescontos@gmail.com <i class="far fa-copy"></i>
+                        </div>
+                        <small style="display: block; margin-top: 8px; color: #666;">Envie o comprovante no WhatsApp.</small>
+                    </div>
+                </div>
+
+                <div id="tab-bitcoin" class="payment-info">
+                    <div class="crypto-box" style="display: flex; flex-direction: column; align-items: center;">
+                        <p style="margin-bottom: 5px; font-weight: 600; width: 100%; text-align: left;">Carteira BTC:</p>
+                        
+                        <div class="copy-box" onclick="copyToClipboard('bc1qxcphlnel97kdlapd4t43wfrjvfpr3yvrer82mq')" title="Clique para copiar" style="width: 100%; margin-bottom: 15px;">
+                            <span style="font-size: 11px;">bc1qxcphlnel97kdlapd4t43wfrjvfpr3yvrer82mq</span> 
+                            <i class="far fa-copy"></i>
+                        </div>
+
+                        <div style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxcphlnel97kdlapd4t43wfrjvfpr3yvrer82mq" alt="QR Code Bitcoin" style="width: 150px; height: 150px; display: block;">
+                            <p style="font-size: 11px; color: #666; margin-top: 8px;"><i class="fas fa-camera"></i> Escaneie com seu App</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-buy" style="margin-top: 15px; background: #25D366;">
+                    <i class="fab fa-whatsapp"></i> Finalizar no Zap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="chat-widget">
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                Atendimento Adín
+                <span style="float: right; cursor: pointer;" onclick="toggleChat()">&times;</span>
+            </div>
+            <div class="chat-body" id="chatBody"></div>
+            <div class="chat-footer">
+                <input type="text" id="msgInput" placeholder="Digite sua dúvida..." onkeypress="handleEnter(event)">
+                <button onclick="sendToWhatsApp()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button class="chat-btn" onclick="toggleChat()">
+            <i class="fab fa-whatsapp"></i>
+            <span class="notification-dot" id="chatNotify">1</span>
+        </button>
+    </div>
+
+    <footer id="contato">
+        <div class="container">
+            <p>&copy; 2026 Loja Adín. Todos os direitos reservados.</p>
+            <div class="footer-links">
+                <a href="#">Privacidade</a>
+                <a href="#">Termos</a>
+            </div>
+            <button class="admin-btn" onclick="configureStore()">⚙️ Configurar WhatsApp</button>
+        </div>
+    </footer>
+
+    <script>
+        // --- FUNÇÃO PARA COPIAR ---
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("✅ Copiado: " + text);
+                }).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert("✅ Copiado: " + text);
+            } catch (err) {
+                alert("Copie manualmente: " + text);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- BANNER ROTATIVO ---
+        const bannerImages = ['./banner/banner-white.png', './banner/banner-nootbooks.png'];
+        let currentBannerIndex = 0;
+        const bannerElement = document.getElementById('bannerImg');
+
+        function rotateBanner() {
+            bannerElement.classList.add('fade-out');
+            setTimeout(() => {
+                currentBannerIndex++;
+                if (currentBannerIndex >= bannerImages.length) currentBannerIndex = 0;
+                bannerElement.src = bannerImages[currentBannerIndex];
+                bannerElement.classList.remove('fade-out');
+            }, 500);
+        }
+        setInterval(rotateBanner, 4000);
+
+        // --- CONFIG LOJA ---
+        let storePhone = localStorage.getItem('adinStorePhone');
+        function checkConfig() {
+            if (!storePhone) {
+                setTimeout(() => {
+                    const number = prompt("🛠️ MODO VENDEDOR: Digite seu WhatsApp (apenas números):", "5521982539175");
+                    if (number) { localStorage.setItem('adinStorePhone', number); storePhone = number; }
+                }, 1000);
+            }
+        }
+        function configureStore() {
+            const newNumber = prompt("Alterar WhatsApp de vendas:", storePhone || "55");
+            if (newNumber) { localStorage.setItem('adinStorePhone', newNumber); storePhone = newNumber; alert("Atualizado!"); }
+        }
+        checkConfig();
+
+        // --- VENDAS ---
+        let selectedProduct = "", selectedPrice = 0, paymentMethod = "Cartão";
+
+        function openCheckout(product, price) {
+            selectedProduct = product; selectedPrice = price;
+            document.getElementById('product-summary').innerHTML = `<strong>${product}</strong><br>Total: R$ ${price.toFixed(2).replace('.', ',')}`;
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+        function closeCheckout() { document.getElementById('checkoutModal').style.display = 'none'; }
+
+        function switchTab(method) {
+            document.querySelectorAll('.payment-info').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + method).classList.add('active');
+            const btns = document.querySelectorAll('.tab-btn');
+            if(method === 'credit') { btns[0].classList.add('active'); paymentMethod = "Cartão"; }
+            if(method === 'pix') { btns[1].classList.add('active'); paymentMethod = "Pix"; }
+            if(method === 'bitcoin') { btns[2].classList.add('active'); paymentMethod = "Bitcoin"; }
+        }
+
+        function processOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('clientName').value;
+            const address = document.getElementById('clientAddress').value;
+            const msg = `*NOVO PEDIDO - LOJA ADÍN* 🛍️%0A%0A📦 *Item:* ${selectedProduct}%0A💰 *Valor:* R$ ${selectedPrice.toFixed(2)}%0A💳 *Pagamento:* ${paymentMethod}%0A👤 *Cliente:* ${name}%0A📍 *Endereço:* ${address}`;
+            window.open(`https://wa.me/${storePhone || "5521982539175"}?text=${msg}`, '_blank');
+            closeCheckout();
+        }
+
+        // --- CHAT INTELIGENTE ---
+        let chatOpen = false, firstOpen = true;
+        function toggleChat() {
+            const box = document.getElementById('chatBox');
+            chatOpen = !chatOpen;
+            box.style.display = chatOpen ? 'block' : 'none';
+            if (chatOpen) {
+                document.getElementById('chatNotify').style.display = 'none';
+                document.getElementById('msgInput').focus();
+                if (firstOpen) { triggerAutoMessages(); firstOpen = false; }
+            }
+        }
+        function triggerAutoMessages() {
+            setTimeout(() => addMsg("Olá! Bem-vindo à Loja Adín. 👋", 'bot'), 600);
+            setTimeout(() => addMsg("Posso ajudar com alguma oferta?", 'bot'), 2000);
+        }
+        function addMsg(txt, type) {
+            const body = document.getElementById('chatBody');
+            const d = document.createElement('div');
+            d.className = 'message ' + type; d.innerText = txt;
+            body.appendChild(d);
+            body.scrollTop = body.scrollHeight;
+        }
+        function sendToWhatsApp() {
+            const txt = document.getElementById('msgInput').value;
+            if (txt.trim() === "") return;
+            addMsg(txt, 'user');
+            document.getElementById('msgInput').value = "";
+            setTimeout(() => {
+                window.open(`https://wa.me/${storePhone || "5521982539175"}?text=${encodeURIComponent(txt)}`, '_blank');
+                addMsg("Redirecionando...", 'bot');
+            }, 1000);
+        }
+        function handleEnter(e) { if (e.key === 'Enter') sendToWhatsApp(); }
+        setTimeout(() => { if(!chatOpen) document.getElementById('chatNotify').style.display = 'flex'; }, 4000);
+
+        window.onclick = function(ev) { if (ev.target == document.getElementById('checkoutModal')) closeCheckout(); }
+    </script>
+</body>
+</html>

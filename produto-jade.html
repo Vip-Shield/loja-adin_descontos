@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jade Hardware Wallet - Loja Adín</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS GERAIS --- */
+        :root {
+            --font-main: 'Poppins', sans-serif;
+            --color-primary: #00726f;
+            --color-accent: #79b9e7;
+            --color-btn: #ff8f00;
+            --color-btn-hover: #e68200;
+            --color-text: #494949;
+            --bg-light: #f5f5f5;
+            --bg-white: #ffffff;
+            --price-old: #d01716;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-white);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .brand-area { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { width: 210px; height: 60px; object-fit: contain; }
+        .brand-text { font-size: 22px; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--color-text); font-weight: 600; font-size: 14px; }
+
+        /* --- ESTILOS ESPECÍFICOS DA PÁGINA DE PRODUTO --- */
+        .breadcrumb { padding: 20px 0; font-size: 14px; color: #777; }
+        .breadcrumb a { text-decoration: none; color: var(--color-primary); font-weight: 600; }
+
+        .product-wrapper {
+            display: flex; flex-wrap: wrap; gap: 40px;
+            background: white; padding: 40px; border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 40px;
+        }
+
+        /* Coluna da Esquerda (Imagens) */
+        .product-gallery { flex: 1; min-width: 300px; }
+        .main-image-container {
+            width: 100%; height: 400px; background: #f9f9f9;
+            border-radius: 10px; overflow: hidden; border: 1px solid #eee;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .main-image-container img { max-width: 100%; max-height: 100%; transition: transform 0.3s; }
+        .main-image-container:hover img { transform: scale(1.1); }
+        
+        .gallery-thumbs { display: flex; gap: 10px; margin-top: 15px; }
+        .thumb {
+            width: 70px; height: 70px; border-radius: 5px; cursor: pointer;
+            object-fit: cover; border: 2px solid transparent; opacity: 0.6;
+        }
+        .thumb.active, .thumb:hover { border-color: var(--color-primary); opacity: 1; }
+
+        /* Coluna da Direita (Infos) */
+        .product-info { flex: 1; min-width: 300px; }
+        .product-title { font-size: 28px; font-weight: 700; color: #333; margin-bottom: 10px; line-height: 1.2; }
+        .reviews { color: #ffc107; font-size: 14px; margin-bottom: 20px; }
+        
+        .price-area { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .p-old { text-decoration: line-through; color: var(--price-old); font-size: 16px; }
+        .p-new { font-size: 36px; font-weight: 700; color: var(--color-primary); }
+        .p-installments { font-size: 14px; color: #666; font-weight: 500; }
+
+        .btn-buy-lg {
+            display: block; width: 100%; padding: 18px;
+            background-color: var(--color-btn); color: white;
+            text-align: center; font-weight: 700; text-transform: uppercase;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: 0.3s; font-size: 18px; margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(255, 143, 0, 0.3);
+        }
+        .btn-buy-lg:hover { background-color: var(--color-btn-hover); transform: translateY(-2px); }
+
+        .trust-badges { display: flex; gap: 20px; margin-bottom: 20px; font-size: 13px; color: #555; }
+        .trust-item { display: flex; align-items: center; gap: 8px; }
+
+        .description-tabs { margin-top: 40px; }
+        .tab-header { border-bottom: 2px solid #eee; margin-bottom: 20px; }
+        .tab-link {
+            display: inline-block; padding: 10px 20px; font-weight: 600;
+            color: #777; cursor: pointer; position: relative;
+        }
+        .tab-link.active { color: var(--color-primary); }
+        .tab-link.active::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 100%; height: 2px; background: var(--color-primary);
+        }
+        
+        .tech-list li { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .tech-list i { color: var(--color-primary); }
+
+        /* --- MODAL --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 480px; border-radius: 10px; padding: 25px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #666; }
+        .form-group { margin-bottom: 15px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 14px; }
+        
+        .payment-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px 5px; background: #eee; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 12px; }
+        .tab-btn.active { background: var(--color-primary); color: white; }
+        
+        .payment-info { display: none; padding: 15px; background: #f9f9f9; border: 1px solid #eee; border-radius: 5px; }
+        .payment-info.active { display: block; }
+
+        /* Estilo do botão de copiar */
+        .copy-box { background: #e0e0e0; padding: 8px; border-radius: 5px; margin: 5px 0; font-family: monospace; cursor: pointer; border: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;}
+        .copy-box:active { background: #ccc; }
+
+        /* --- CHAT WIDGET --- */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 999; }
+        .chat-btn { width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; border: none; transition: transform 0.2s; position: relative; }
+        .chat-btn:hover { transform: scale(1.1); }
+        .notification-dot { position: absolute; top: 0; right: 0; width: 18px; height: 18px; background: red; border-radius: 50%; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 2px solid white; display: none; }
+        .chat-box { display: none; position: absolute; bottom: 80px; right: 0; width: 300px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); overflow: hidden; animation: fadeIn 0.3s; }
+        .chat-header { background: #075e54; color: white; padding: 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { padding: 15px; height: 200px; overflow-y: auto; background: #e5ddd5; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 8px 12px; border-radius: 10px; font-size: 14px; max-width: 85%; line-height: 1.4; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message.bot { background: white; align-self: flex-start; border-top-left-radius: 0; }
+        .message.user { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; text-align: right; }
+        .chat-footer { padding: 10px; background: #f0f0f0; border-top: 1px solid #ddd; display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
+        .chat-footer button { background: #075e54; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        footer { background: #333; color: white; padding: 30px 0; text-align: center; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="brand-area">
+                <img src="./img/adin-descontos-black.png" alt="Logo" class="logo-img">
+                <span class="brand-text">Loja Adín</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Voltar para Loja</a>
+                <a href="#contato">Suporte</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Início</a> &gt; Cripto Segurança &gt; Jade Hardware Wallet
+        </div>
+
+        <div class="product-wrapper">
+            
+            <div class="product-gallery">
+                <div class="main-image-container">
+                    <img id="mainImg" src="./Produtos/jade-hardwallet/jade-hard.png" alt="Jade Hardware Wallet">
+                </div>
+                <div class="gallery-thumbs">
+                    <img src="./Produtos/jade-hardwallet/jade-hard-case.webp" class="thumb active" onclick="changeImage(this)">
+                    <img src="./Produtos/jade-hardwallet/jade-frente.webp" class="thumb" onclick="changeImage(this)">
+                    <img src="./Produtos/jade-hardwallet/jade-traseira.webp" class="thumb" onclick="changeImage(this)">
+		    <img src="./Produtos/jade-hardwallet/cabo-e-manual.webp" class="thumb" onclick="changeImage(this)">
+		    <img src="./Produtos/jade-hardwallet/jade-qrcode.webp" class="thumb" onclick="changeImage(this)">
+                </div>
+            </div>
+
+            <div class="product-info">
+                <h1 class="product-title">Carteira Cripto Blockstream Jade Hardware Wallet</h1>
+                
+                <div class="reviews">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span style="color: #666; margin-left: 5px;">(42 avaliações)</span>
+                </div>
+
+                <div class="price-area">
+                    <div class="p-old">De R$ 867,90</div>
+                    <div class="p-new">R$ 795,00</div>
+                    <div class="p-installments">ou em até 3x de R$ 265,00 sem juros</div>
+                    <div style="margin-top: 10px; font-size: 13px; color: #25D366; font-weight: 600;">
+                        <i class="fas fa-check-circle"></i> 5% de desconto no Pix
+                    </div>
+                </div>
+
+                <ul class="tech-list" style="margin-bottom: 25px; color: #555;">
+                    <li><i class="fas fa-shield-alt"></i> Totalmente Air-gapped (via Câmera/QR)</li>
+                    <li><i class="fab fa-bluetooth"></i> Opção Bluetooth e USB-C</li>
+                    <li><i class="fas fa-lock"></i> Segurança Multisig Shield</li>
+                    <li><i class="fas fa-mobile-alt"></i> Compatível com iOS e Android</li>
+                </ul>
+
+                <button class="btn-buy-lg" onclick="openCheckout('Jade Hardware Wallet', 795.00)">
+                    Comprar Agora <i class="fas fa-shopping-cart" style="margin-left: 10px;"></i>
+                </button>
+
+                <div class="trust-badges">
+                    <div class="trust-item"><i class="fas fa-truck"></i> Frete Grátis</div>
+                    <div class="trust-item"><i class="fas fa-shield-alt"></i> Garantia de 1 ano</div>
+                    <div class="trust-item"><i class="fas fa-undo"></i> 7 dias para devolução</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-wrapper" style="display: block;">
+            <div class="tab-header">
+                <span class="tab-link active">Descrição do Produto</span>
+            </div>
+            
+            <div style="color: #555; line-height: 1.8;">
+                <h3 style="color: var(--color-primary); margin-bottom: 15px;">Segurança Máxima para seus Bitcoins</h3>
+                <p style="margin-bottom: 15px;">
+                    A <strong>Blockstream Jade</strong> é uma carteira de hardware fácil de usar e puramente open-source, que oferece segurança avançada para seus ativos Bitcoin e Liquid. Construída para ser segura, barata e fácil de operar.
+                </p>
+                
+                <h4 style="margin-bottom: 10px; margin-top: 20px;">Principais Funcionalidades:</h4>
+                <ul style="padding-left: 20px; margin-bottom: 20px;">
+                    <li><strong>Air-gapped (QR Code):</strong> Opere sem nunca conectar cabos ao seu computador, usando apenas a câmera para escanear QR Codes.</li>
+                    <li><strong>Tela Colorida IPS:</strong> Visualize endereços e transações com clareza total.</li>
+                    <li><strong>Bateria Integrada:</strong> Bateria de 240mAh recarregável para uso móvel.</li>
+                    <li><strong>Sleep Mode Seguro:</strong> Seus dados são criptografados quando o dispositivo está desligado.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 10px;">O que vem na caixa:</h4>
+                <p>1x Blockstream Jade, 1x Cabo USB-C, 3x Cartões de recuperação de sementes (Seed phrases), Guia de início rápido.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-widget">
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                Atendimento Adín
+                <span style="float: right; cursor: pointer;" onclick="toggleChat()">&times;</span>
+            </div>
+            <div class="chat-body" id="chatBody"></div>
+            <div class="chat-footer">
+                <input type="text" id="msgInput" placeholder="Digite sua dúvida..." onkeypress="handleEnter(event)">
+                <button onclick="sendToWhatsApp()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button class="chat-btn" onclick="toggleChat()">
+            <i class="fab fa-whatsapp"></i>
+            <span class="notification-dot" id="chatNotify">1</span>
+        </button>
+    </div>
+
+    <footer id="contato">
+        <div class="container">
+            <p>&copy; 2026 Loja Adín. Todos os direitos reservados.</p>
+            <div class="footer-links" style="margin-top: 10px;">
+                <a href="#" style="color: #ccc; margin: 0 10px; text-decoration: none;">Privacidade</a>
+                <a href="#" style="color: #ccc; margin: 0 10px; text-decoration: none;">Termos</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCheckout()">&times;</span>
+            <h3 style="margin-bottom: 15px; color: var(--color-primary);">Finalizar Pedido</h3>
+            
+            <div id="product-summary" style="background: #f0f0f0; padding: 10px; margin-bottom: 15px; border-radius: 5px; font-size: 13px;"></div>
+
+            <form id="checkoutForm" onsubmit="processOrder(event)">
+                <div class="form-group"><input type="text" id="clientName" required placeholder="Nome Completo"></div>
+                <div class="form-group"><input type="text" id="clientAddress" required placeholder="Endereço Completo"></div>
+
+                <label style="font-weight: 600; font-size: 13px; display:block; margin-bottom: 5px;">Pagamento:</label>
+                <div class="payment-tabs">
+                    <button type="button" class="tab-btn active" onclick="switchTab('credit')"><i class="far fa-credit-card"></i> Cartão</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('pix')"><i class="fas fa-qrcode"></i> Pix</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('bitcoin')"><i class="fab fa-bitcoin"></i> Cripto</button>
+                </div>
+
+                <div id="tab-credit" class="payment-info active">
+                    <input type="text" placeholder="Número do Cartão" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:5px; margin-bottom:5px;">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" placeholder="MM/AA" style="width:50%; padding:8px; border:1px solid #ccc; border-radius:5px;">
+                        <input type="text" placeholder="CVV" style="width:50%; padding:8px; border:1px solid #ccc; border-radius:5px;">
+                    </div>
+                </div>
+
+                <div id="tab-pix" class="payment-info">
+                    <div style="font-size: 12px; text-align: center;">
+                        <p style="margin-bottom: 5px; font-weight: bold;">Chave Pix:</p>
+                        <div class="copy-box" onclick="copyToClipboard('adindescontos@gmail.com')" title="Clique para copiar">
+                            adindescontos@gmail.com <i class="far fa-copy"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-bitcoin" class="payment-info">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <p style="margin-bottom: 5px; font-weight: 600; width: 100%; text-align: left;">Carteira BTC:</p>
+                        
+                        <div class="copy-box" onclick="copyToClipboard('bc1qxcphlnel97kdlapd4t43wfrjvfpr3yvrer82mq')" title="Clique para copiar" style="width: 100%; margin-bottom: 15px;">
+                            <span style="font-size: 11px; word-break: break-all;">bc1qxcphlnel97kdlapd4t43wfrjvfpr3yvrer82mq</span> 
+                            <i class="far fa-copy"></i>
+                        </div>
+
+                        <div style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxcphlnel97kdlapd4t43wfrjvfpr3yvrer82mq" 
+                                 alt="QR Code Bitcoin" 
+                                 style="width: 150px; height: 150px; display: block;">
+                            <p style="font-size: 11px; color: #666; margin-top: 8px;"><i class="fas fa-camera"></i> Escaneie com seu App</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-buy-lg" style="margin-top: 15px; background: #25D366; font-size: 16px; padding: 12px;">
+                    <i class="fab fa-whatsapp"></i> Finalizar no Zap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- SCRIPT DE GALERIA ---
+        function changeImage(element) {
+            document.getElementById('mainImg').src = element.src;
+            document.querySelectorAll('.thumb').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // --- FUNÇÃO PARA COPIAR (CORRIGIDA) ---
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("✅ Copiado: " + text);
+                }).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert("✅ Copiado: " + text);
+            } catch (err) {
+                alert("Copie manualmente: " + text);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- LÓGICA DE CHECKOUT E WHATSAPP ---
+        let storePhone = localStorage.getItem('adinStorePhone') || "5521982539175";
+        let selectedProduct = "";
+        let selectedPrice = 0;
+        let paymentMethod = "Cartão";
+
+        function openCheckout(product, price) {
+            selectedProduct = product;
+            selectedPrice = price;
+            document.getElementById('product-summary').innerHTML = `
+                <strong>${product}</strong><br>
+                Total a pagar: R$ ${price.toFixed(2).replace('.', ',')}
+            `;
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        function switchTab(method) {
+            document.querySelectorAll('.payment-info').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + method).classList.add('active');
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            if(method === 'credit') { buttons[0].classList.add('active'); paymentMethod = "Cartão"; }
+            if(method === 'pix') { buttons[1].classList.add('active'); paymentMethod = "Pix"; }
+            if(method === 'bitcoin') { buttons[2].classList.add('active'); paymentMethod = "Bitcoin"; }
+        }
+
+        function processOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('clientName').value;
+            const address = document.getElementById('clientAddress').value;
+
+            const msg = `*NOVO PEDIDO - LOJA ADÍN* 🛍️%0A%0A` +
+                        `📦 *Produto:* ${selectedProduct}%0A` +
+                        `💰 *Valor:* R$ ${selectedPrice.toFixed(2)}%0A` +
+                        `💳 *Pagamento:* ${paymentMethod}%0A%0A` +
+                        `👤 *Cliente:* ${name}%0A` +
+                        `📍 *Endereço:* ${address}%0A%0A` +
+                        `_Enviado via Página do Produto_`;
+            
+            window.open(`https://wa.me/${storePhone}?text=${msg}`, '_blank');
+            closeCheckout();
+        }
+
+        window.onclick = function(ev) {
+            if (ev.target == document.getElementById('checkoutModal')) closeCheckout();
+        }
+
+        // --- LÓGICA DO CHAT INTELIGENTE ---
+        let chatOpen = false;
+        let firstOpen = true;
+
+        function toggleChat() {
+            const box = document.getElementById('chatBox');
+            const notify = document.getElementById('chatNotify');
+            chatOpen = !chatOpen;
+            box.style.display = chatOpen ? 'block' : 'none';
+            
+            if (chatOpen) {
+                notify.style.display = 'none';
+                document.getElementById('msgInput').focus();
+                if (firstOpen) { triggerAutoMessages(); firstOpen = false; }
+            }
+        }
+
+        function triggerAutoMessages() {
+            setTimeout(() => addMsg("Olá! Interessado na Jade Wallet? 🛡️", 'bot'), 600);
+            setTimeout(() => addMsg("Ela é a melhor opção para segurança cripto hoje.", 'bot'), 2500);
+        }
+
+        function addMsg(txt, type) {
+            const body = document.getElementById('chatBody');
+            const d = document.createElement('div');
+            d.className = 'message ' + type;
+            d.innerText = txt;
+            body.appendChild(d);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function sendToWhatsApp() {
+            const input = document.getElementById('msgInput');
+            const text = input.value;
+            if (text.trim() === "") return;
+            addMsg(text, 'user');
+            input.value = "";
+            setTimeout(() => {
+                const url = `https://wa.me/${storePhone}?text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+                addMsg("Redirecionando para o WhatsApp...", 'bot');
+            }, 1000);
+        }
+
+        function handleEnter(e) { if (e.key === 'Enter') sendToWhatsApp(); }
+        setTimeout(() => { if(!chatOpen) document.getElementById('chatNotify').style.display = 'flex'; }, 4000);
+
+    </script>
+</body>
+</html>
